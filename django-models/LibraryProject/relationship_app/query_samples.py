@@ -13,7 +13,7 @@ librarian = Librarian.objects.create(name="Jane Doe", library=library)
 
 print("--- Query 1: All books by a specific author ---")
 author_object = Author.objects.get(name=author_name)
-books_by_author = Book.objects.filter(author=author_object)
+books_by_author = Book.objects.filter(author=author)
 for book in books_by_author:
     print(f"Book: {book.title}")
 
