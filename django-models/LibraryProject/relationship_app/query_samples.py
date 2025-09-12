@@ -24,5 +24,5 @@ for book in library_books:
     print(f"Book: {book.title}")
 
 print("\n--- Query 3: Librarian for a library ---")
-library_librarian = Library.objects.get(name=library_name).librarian
+library_librarian = Library.objects.get(library=library)
 print(f"Librarian: {library_librarian.name}")
