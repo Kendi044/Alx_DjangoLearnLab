@@ -18,11 +18,11 @@ for book in books_by_author:
     print(f"Book: {book.title}")
 
 print("\n--- Query 2: All books in a library ---")
-library_object = Library.objects.get(name=library_name)
+library_object = Library.objects.get(library=library)
 library_books = library_object.books.all()
 for book in library_books:
     print(f"Book: {book.title}")
 
 print("\n--- Query 3: Librarian for a library ---")
-library_librarian = Library.objects.get(library=
+library_librarian = Library.objects.get(name=library_name).librarian
 print(f"Librarian: {library_librarian.name}")
