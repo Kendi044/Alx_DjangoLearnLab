@@ -6,6 +6,26 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
 from .forms import UserRegisterForm
+from django.shortcuts import render
+from django.views.generic import DetailView
+from .models import Book, Library
+
+# Function-based view to list all books
+def book_list(request):
+    """
+    Renders a list of all books stored in the database.
+    """
+    books = Book.objects.all()
+    return render(request, 'list_books.html', {'books': books})
+
+# Class-based view to display details for a specific library
+class LibraryDetailView(DetailView):
+    """
+    Renders details for a specific library, including all books it contains.
+    """
+    model = Library
+    template_name = 'library_detail.html'
+    context_object_name = 'library'
 
 # Define a function to check if the user is a librarian
 def is_librarian(user):
