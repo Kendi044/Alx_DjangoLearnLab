@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import user_passes_test
-from django.utils.decorators import permission_required, method_decorator
+from django.utils.decorators import permission_required
 from .forms import UserRegisterForm, BookForm
 from django.shortcuts import render
 from django.views.generic import DetailView
