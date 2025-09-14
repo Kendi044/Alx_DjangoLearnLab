@@ -1,42 +1,53 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib import messages
-from .forms import UserRegisterForm
-from django.contrib.auth import login
+from django.views.generic import TemplateView
 from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
-class LoginView(LoginView):
-    template_name = 'relationship_app/login.html'
-
-# This class handles the logout functionality
-class LogoutView(LogoutView):
-    template_name = 'relationship_app/logout.html'
-
-# This function-based view handles user registration
-def register(request):
+# User Registration View
+class UserRegistrationView(FormView):
     """
-    Handles user registration.
-
-    This view processes both GET and POST requests for user registration.
-    - If the request method is POST and the form is valid, it saves the new user
-      and redirects to the login page.
-    - If the request is GET, it displays an empty registration form.
+    A view for user registration.
+    - Uses Django's built-in UserCreationForm.
+    - Redirects to the login page on successful registration.
     """
-    # Check if the request is a POST request
-    if request.method == 'POST':
-        # Create a form instance and populate it with data from the request
-        form = UserCreationForm(request.POST)
-        # Check if the form is valid
-        if form.is_valid():
-            # Save the new user
-            form.save()
-            # Display a success message to the user
-            messages.success(request, f'Your account has been created! You are now able to log in.')
-            # Redirect the user to the login page
-            return redirect('login')
-    else:
-        # If it's a GET request, create an empty form
-        form = UserCreationForm()
-    
-    # Render the registration page with the form
-    return render(request, 'relationship_app/register.html', {'form': form})
+    template_name = 'relationship_app/register.html'
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+# Role-Based Views
+class MemberView(LoginRequiredMixin, TemplateView):
+    """
+    View for a standard member.
+    - Requires a logged-in user to access.
+    """
+    template_name = 'relationship_app/member_view.html'
+
+class LibrarianView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """
+    View for a librarian.
+    - Requires a logged-in user.
+    - Only accessible if the user passes the test_func.
+    """
+    template_name = 'relationship_app/librarian_view.html'
+
+    def test_func(self):
+        # Placeholder for librarian role check.
+        # You would typically check for a specific group or permission.
+        return self.request.user.is_staff
+
+class AdminView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """
+    View for an admin user.
+    - Requires a logged-in user.
+    - Only accessible if the user is an admin (is_superuser).
+    """
+    template_name = 'relationship_app/admin_view.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
