@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .forms import UserRegisterForm # Add this import
 
 # User Registration View
 class UserRegistrationView(FormView):
@@ -13,7 +13,7 @@ class UserRegistrationView(FormView):
     - Redirects to the login page on successful registration.
     """
     template_name = 'relationship_app/register.html'
-    form_class = UserCreationForm
+    form_class = UserRegisterForm # Corrected to use your custom form
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):
