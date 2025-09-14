@@ -19,7 +19,7 @@ urlpatterns = [
 
     # Role-based dashboard URLs
     path('member/', views.MemberView.as_view(), name='member_view'),
-    path('books/add/', views.BookCreateView.as_view(), name='add_book'),
-    path('books/edit/<int:pk>/', views.BookUpdateView.as_view(), name='edit_book'),
+    path('books/add/', views.BookCreateView.as_view(), name='add_book/'),
+    path('books/edit/<int:pk>/', views.BookUpdateView.as_view(), name='edit_book/'),
     path('books/delete/<int:pk>/', views.BookDeleteView.as_view(), name='delete_book'),
 ]
