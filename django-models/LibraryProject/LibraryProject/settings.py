@@ -132,3 +132,14 @@ LOGIN_REDIRECT_URL = 'home'
 # URL to redirect to after a user logs out.
 # This will redirect them back to the login page.
 LOGOUT_REDIRECT_URL = 'login'
+
+# Add these lines to your settings.py file to configure redirects
+# after login and logout.
+
+# URL to redirect to after a successful login.
+# This will redirect them to the member view, as the default starting point.
+LOGIN_REDIRECT_URL = '/relationship-app/member/'
+
+# URL to redirect to after a user logs out.
+# This will redirect them back to the login page.
+LOGOUT_REDIRECT_URL = '/relationship-app/login/'
