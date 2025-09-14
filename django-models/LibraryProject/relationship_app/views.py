@@ -2,8 +2,18 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import UserRegisterForm # Add this import
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.decorators import method_decorator
+from .forms import UserRegisterForm
+
+# Define a function to check if the user is a librarian
+def is_librarian(user):
+    return user.is_staff
+
+# Define a function to check if the user is an admin
+def is_admin(user):
+    return user.is_superuser
 
 # User Registration View
 class UserRegistrationView(FormView):
@@ -13,7 +23,7 @@ class UserRegistrationView(FormView):
     - Redirects to the login page on successful registration.
     """
     template_name = 'relationship_app/register.html'
-    form_class = UserRegisterForm # Corrected to use your custom form
+    form_class = UserRegisterForm
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):
@@ -28,26 +38,21 @@ class MemberView(LoginRequiredMixin, TemplateView):
     """
     template_name = 'relationship_app/member_view.html'
 
-class LibrarianView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+@method_decorator(user_passes_test(is_librarian), name='dispatch')
+class LibrarianView(LoginRequiredMixin, TemplateView):
     """
     View for a librarian.
     - Requires a logged-in user.
-    - Only accessible if the user passes the test_func.
+    - Only accessible if the user passes the test.
     """
     template_name = 'relationship_app/librarian_view.html'
 
-    def test_func(self):
-        # Placeholder for librarian role check.
-        # You would typically check for a specific group or permission.
-        return self.request.user.is_staff
-
-class AdminView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+@method_decorator(user_passes_test(is_admin), name='dispatch')
+class AdminView(LoginRequiredMixin, TemplateView):
     """
     View for an admin user.
     - Requires a logged-in user.
-    - Only accessible if the user is an admin (is_superuser).
+    - Only accessible if the user is an admin.
     """
     template_name = 'relationship_app/admin_view.html'
 
-    def test_func(self):
-        return self.request.user.is_superuser
