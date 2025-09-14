@@ -8,7 +8,8 @@ from django.utils.decorators import method_decorator
 from .forms import UserRegisterForm
 from django.shortcuts import render
 from django.views.generic import DetailView
-from .models import Book, Library
+from .models import Book
+from .models import Library
 
 # Function-based view to list all books
 def book_list(request):
@@ -24,7 +25,7 @@ class LibraryDetailView(DetailView):
     Renders details for a specific library, including all books it contains.
     """
     model = Library
-    template_name = 'library_detail.html'
+    template_name = 'relationship_app/library_detail.html'
     context_object_name = 'library'
 
 # Define a function to check if the user is a librarian
