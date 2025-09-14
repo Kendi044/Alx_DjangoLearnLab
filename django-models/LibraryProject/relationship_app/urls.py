@@ -1,12 +1,8 @@
-from django.contrib.auth.views import LoginView, LogoutView
-from django.shortcuts import render
+from django.urls import path
+from .views import LoginView, LogoutView, register
 
-class CustomLoginView(LoginView):
-    template_name = 'relationship_app/login.html'
-
-class CustomLogoutView(LogoutView):
-    template_name = 'relationship_app/logout.html'
-
-def register(request):
-    # Your registration logic here
-    pass
+urlpatterns = [
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('register/', register, name='register'),
+]
