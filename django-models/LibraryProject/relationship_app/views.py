@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView, ListView
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import user_passes_test
-from django.utils.decorators import method_decorator
-from .forms import UserRegisterForm
+from django.utils.decorators import method_decorator, permission_required
+from .forms import UserRegisterForm, BookForm
 from django.shortcuts import render
 from django.views.generic import DetailView
 from .models import Book
@@ -78,4 +78,30 @@ class AdminView(LoginRequiredMixin, TemplateView):
     - Only accessible if the user is an admin.
     """
     template_name = 'relationship_app/admin_view.html'
+
+@method_decorator(permission_required('relationship_app.can_add_book', raise_exception=True), name='dispatch')
+class BookCreateView(LoginRequiredMixin, CreateView):
+    model = Book
+    form_class = BookForm
+    template_name = 'relationship_app/book_form.html'
+    success_url = reverse_lazy('list_books')
+
+@method_decorator(permission_required('relationship_app.can_change_book', raise_exception=True), name='dispatch')
+class BookUpdateView(LoginRequiredMixin, UpdateView):
+    model = Book
+    form_class = BookForm
+    template_name = 'relationship_app/book_form.html'
+    success_url = reverse_lazy('list_books')
+
+@method_decorator(permission_required('relationship_app.can_delete_book', raise_exception=True), name='dispatch')
+class BookDeleteView(LoginRequiredMixin, DeleteView):
+    model = Book
+    template_name = 'relationship_app/book_confirm_delete.html'
+    success_url = reverse_lazy('list_books')
+
+# A view to list all books. This is not part of the secured views.
+class BookListView(ListView):
+    model = Book
+    template_name = 'relationship_app/book_list.html'
+
 
