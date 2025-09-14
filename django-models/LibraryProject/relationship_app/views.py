@@ -14,6 +14,7 @@ def is_librarian(user):
 # Define a function to check if the user is an admin
 def is_admin(user):
     return user.is_superuser
+@user_passes_test
 
 # User Registration View
 class UserRegistrationView(FormView):
