@@ -1,28 +1,20 @@
 from django.urls import path
-from django.contrib.auth.views import LoginView, LogoutView
-from .views import register
-from .views import list_books
-from .views import book_list, LibraryDetailView
+from . import views
 
 urlpatterns = [
-    # URL for the function-based view
-    path('books/', book_list, name='book-list'),
-    
-    # URL for the class-based view with a dynamic primary key
-    path('libraries/<int:pk>/', LibraryDetailView.as_view(), name='library-detail'),
-]
+    # Auth views
+    path('login/', views.CustomLoginView.as_view(), name='login'),
+    path('register/', views.UserRegistrationView.as_view(), name='register'),
+    path('logout/', views.CustomLogoutView.as_view(), name='logout'),
 
-urlpatterns = [
-    path('login/', LoginView.as_view(template_name='relationship_app/login.html'), name='login'),
-    path('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),
-    path('register/', views.register, name='register'),
-
-    # Role-based dashboard URLs
+    # Role-based views
     path('member/', views.MemberView.as_view(), name='member_view'),
-
-    # Book management URLs (secured with permissions)
-    path('books/add/', views.BookCreateView.as_view(), name='add_book'),
-    path('books/edit/<int:pk>/', views.BookUpdateView.as_view(), name='edit_book'),
-    path('books/delete/<int:pk>/', views.BookDeleteView.as_view(), name='delete_book'),
-
+    path('librarian/', views.LibrarianView.as_view(), name='librarian_view'),
+    path('admin/', views.AdminView.as_view(), name='admin_view'),
+    
+    # Book-related views with permissions
+    path('books/', views.BookListView.as_view(), name='book_list'),
+    path('books/create/', views.BookCreateView.as_view(), name='book_create'),
+    path('books/<int:pk>/edit/', views.BookEditView.as_view(), name='book_edit'),
+    path('books/<int:pk>/delete/', views.BookDeleteView.as_view(), name='book_delete'),
 ]
