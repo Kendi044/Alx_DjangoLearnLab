@@ -70,4 +70,23 @@ def create_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def save_profile(sender, instance, **kwargs):
     instance.userprofile.save()
+    
+---
+class Book(models.Model):
+    """
+    A model to represent a book with custom permissions.
+    """
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=200)
+    publication_date = models.DateField()
 
+    class Meta:
+        permissions = (
+            ("can_view", "Can view book"),
+            ("can_create", "Can create book"),
+            ("can_edit", "Can edit book"),
+            ("can_delete", "Can delete book"),
+        )
+
+    def __str__(self):
+        return self.title
