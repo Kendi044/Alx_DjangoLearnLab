@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from .forms import UserRegistrationForm
 from .models import Book
+from .forms import ExampleForm
 
 class CustomLoginView(LoginView):
     template_name = 'relationship_app/login.html'
