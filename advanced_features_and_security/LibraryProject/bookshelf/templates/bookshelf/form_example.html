@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example Form</title>
+    <!-- Load Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-lg transition-all duration-300 transform hover:scale-105">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-extrabold text-gray-900">Contact Us</h1>
+            <p class="mt-2 text-gray-500">Please fill out the form below to get in touch with us.</p>
+        </div>
+        
+        <form id="contact-form" class="space-y-6">
+            <!-- Full Name Input -->
+            <div>
+                <label for="full-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <input type="text" name="full-name" id="full-name" placeholder="John Doe" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" required>
+            </div>
+            
+            <!-- Email Address Input -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                <input type="email" name="email" id="email" placeholder="you@example.com" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" required>
+            </div>
+            
+            <!-- Message Textarea -->
+            <div>
+                <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                <textarea name="message" id="message" rows="4" placeholder="Your message here..." class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" required></textarea>
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Submit
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            
+            const formMessage = document.createElement('div');
+            formMessage.textContent = 'Form submitted successfully!';
+            formMessage.className = 'mt-4 text-center text-green-600 font-semibold';
+            
+            // Append the message to the form container
+            const formContainer = document.querySelector('.bg-white');
+            formContainer.appendChild(formMessage);
+            
+            // Optional: You can clear the form fields here if needed
+            // event.target.reset();
+        });
+    </script>
+</body>
+</html>
