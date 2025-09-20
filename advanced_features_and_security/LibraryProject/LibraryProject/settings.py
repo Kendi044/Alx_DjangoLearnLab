@@ -163,3 +163,39 @@ CSRF_COOKIE_SECURE = True
 
 # Ensures that the session cookie is only sent over a secure HTTPS connection
 SESSION_COOKIE_SECURE = True
+LOGIN_REDIRECT_URL = '/relationship-app/member/'
+
+# URL to redirect to after a user logs out.
+# This will redirect them back to the login page.
+LOGOUT_REDIRECT_URL = '/relationship-app/login/'
+
+# --- Security Configuration ---
+
+# Set to True to redirect all non-HTTPS requests to HTTPS.
+# This ensures that all traffic is encrypted.
+SECURE_SSL_REDIRECT = True
+
+# HSTS settings
+# This tells browsers to only access your site using HTTPS.
+# The value is in seconds (31536000 is one year).
+SECURE_HSTS_SECONDS = 31536000
+# This ensures HSTS is also applied to subdomains.
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# Allows browsers to preload this HSTS policy, ensuring
+# secure connections from the very first visit.
+SECURE_HSTS_PRELOAD = True
+
+# Cookie security settings
+# Ensures the session cookie is only sent over a secure HTTPS connection.
+SESSION_COOKIE_SECURE = True
+# Ensures the CSRF cookie is only sent over a secure HTTPS connection.
+CSRF_COOKIE_SECURE = True
+
+# Header security settings
+# Prevents browsers from MIME-sniffing a response away from the declared Content-Type.
+SECURE_CONTENT_TYPE_NOSNIFF = True
+# Enables the browser's built-in XSS filter.
+SECURE_BROWSER_XSS_FILTER = True
+# Prevents your site from being framed, protecting against clickjacking attacks.
+# Set to 'DENY' to block all framing, or 'SAMEORIGIN' to allow framing from the same domain.
+X_FRAME_OPTIONS = 'DENY'
