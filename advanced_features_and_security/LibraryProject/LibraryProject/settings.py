@@ -143,3 +143,23 @@ LOGIN_REDIRECT_URL = '/relationship-app/member/'
 # URL to redirect to after a user logs out.
 # This will redirect them back to the login page.
 LOGOUT_REDIRECT_URL = '/relationship-app/login/'
+
+# Security Settings
+# Protects against common security vulnerabilities.
+
+# X-Content-Type-Options header to prevent MIME type sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# X-XSS-Protection header to enable browser's built-in XSS filter
+SECURE_BROWSER_XSS_FILTER = True
+
+# X-Frame-Options header to protect against Clickjacking attacks
+# Set to 'DENY' to prevent the site from being loaded in a frame
+# or 'SAMEORIGIN' to allow framing only from the same origin.
+X_FRAME_OPTIONS = 'DENY'
+
+# Ensures that the CSRF cookie is only sent over a secure HTTPS connection
+CSRF_COOKIE_SECURE = True
+
+# Ensures that the session cookie is only sent over a secure HTTPS connection
+SESSION_COOKIE_SECURE = True
