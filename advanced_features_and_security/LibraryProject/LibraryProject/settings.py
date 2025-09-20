@@ -199,3 +199,7 @@ SECURE_BROWSER_XSS_FILTER = True
 # Prevents your site from being framed, protecting against clickjacking attacks.
 # Set to 'DENY' to block all framing, or 'SAMEORIGIN' to allow framing from the same domain.
 X_FRAME_OPTIONS = 'DENY'
+
+# Trust the X-Forwarded-Proto header from a reverse proxy.
+# This is required when running behind a load balancer or a proxy that handles SSL.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
