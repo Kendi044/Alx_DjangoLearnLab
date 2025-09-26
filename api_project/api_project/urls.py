@@ -16,7 +16,6 @@ Including another URLconf
 """
 
 from django.contrib import admin
-<<<<<<< HEAD
 from django.urls import path, include
 from .views import BookList # Import the view you just created
 
@@ -25,13 +24,4 @@ urlpatterns = [
     # Maps the endpoint 'api/books/' (when included in the project) to the BookList view
     path('books/', BookList.as_view(), name='book-list'), 
     path('api/', include('api.urls')),
-=======
-from django.urls import path, include 
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    
-    # This line includes the API application's URL patterns under the 'api/' prefix.
-    path('api/', include('api.urls')), 
->>>>>>> fbecad74eabd3ae59a44bd7d09df2922f09487c3
 ]

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken.views import obtain_auth_token 
@@ -23,7 +22,7 @@ urlpatterns = [
     # This line connects all the automatically generated routes.
     path('', include(router.urls)), 
 ]
-=======
+
 from django.contrib import admin
 from django.urls import path, include
 from .views import BookList # Import the view you just created
@@ -34,4 +33,3 @@ urlpatterns = [
     path('books/', BookList.as_view(), name='book-list'), 
     path('api/', include('api.urls')),
 ]
->>>>>>> fbecad74eabd3ae59a44bd7d09df2922f09487c3
