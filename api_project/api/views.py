@@ -1,18 +1,24 @@
-from rest_framework import generics
-# Import the model and serializer we defined
+from rest_framework import viewsets, permissions
 from .models import Book
 from .serializers import BookSerializer
+from rest_framework.generics import ListAPIView
 
-class BookList(generics.ListAPIView):
-    """
-    API View to list all existing Book records.
-    
-    By inheriting from ListAPIView, this class automatically
-    implements the logic for handling HTTP GET requests.
-    """
-    
-    # 1. Define the data source: retrieve all books from the database.
+# The previous view for listing all books (retained for the specific 'books/' URL)
+class BookList(ListAPIView):
     queryset = Book.objects.all()
-    
-    # 2. Define the serializer class to convert the model data to JSON format.
     serializer_class = BookSerializer
+
+# Step 1: Create the ModelViewSet for full CRUD operations
+class BookViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet that automatically provides 'list', 'create', 'retrieve', 'update', 
+    and 'destroy' actions for the Book model.
+    """
+    queryset = Book.objects.all().order_by('title')
+    serializer_class = BookSerializer
+    
+    # Step 3 (Auth): Define Permission Classes
+    # Allows anyone (unauthenticated users) to read (GET, HEAD, OPTIONS).
+    # Requires authentication (via token or session) for write operations 
+    # (POST, PUT, PATCH, DELETE).
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
