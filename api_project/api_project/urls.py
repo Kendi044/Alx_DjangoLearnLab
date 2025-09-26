@@ -14,13 +14,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
-from django.urls import path, include
-from .views import BookList # Import the view you just created
+from django.urls import path, include 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Maps the endpoint 'api/books/' (when included in the project) to the BookList view
-    path('books/', BookList.as_view(), name='book-list'), 
-    path('api/', include('api.urls')),
+    
+    # This line includes the API application's URL patterns under the 'api/' prefix.
+    path('api/', include('api.urls')), 
 ]
