@@ -1,6 +1,6 @@
 # api/urls.py
-from django.contrib import admin
-from django.urls import path, include 
+
+from django.urls import path
 from .views import (
     BookListView, 
     BookDetailView, 
@@ -10,11 +10,10 @@ from .views import (
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    
     
     # 📢 CRITICAL STEP: Include the API app's URLs
-    # This maps all URLs defined in api/urls.py to the /api/ base path.
-    path('api/', include('api.urls')), 
+    # This maps all URLs defined in api/urls.py to the /api/ base path. 
     # Task 1: List View (GET /api/books/)
     path('books/', BookListView.as_view(), name='book-list'),
     
@@ -29,4 +28,5 @@ urlpatterns = [
     
     # Task 1: Delete View (DELETE /api/books/<int:pk>/delete/)
     path('books/delete/', BookDeleteView.as_view(), name='book-delete'),
+   
 ]
