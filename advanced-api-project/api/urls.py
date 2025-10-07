@@ -10,21 +10,18 @@ from .views import (
 )
 
 urlpatterns = [
-    # Task 1: List View (GET) and Create View (POST)
-    # The LIST and CREATE endpoints typically share the same base URL (books/)
-    # They are separated into two distinct views here for compliance with the request.
+    # Task 1: List View (GET /api/books/)
     path('books/', BookListView.as_view(), name='book-list'),
-    path('books/create/', BookCreateView.as_view(), name='book-create'), # Explicit create path
-
-    # Task 1: Detail, Update, and Delete operate on a single resource ID (<int:pk>)
     
-    # Detail View (GET)
+    # Task 1: Create View (POST /api/books/create/)
+    path('books/create/', BookCreateView.as_view(), name='book-create'), 
+
+    # Task 1: Detail View (GET /api/books/<int:pk>/)
     path('books/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
     
-    # Update View (PUT/PATCH) - Typically uses the same URL as Detail, but handles different methods
-    # For separation required by the task, we'll keep the views distinct but use clean paths:
+    # Task 1: Update View (PUT/PATCH /api/books/<int:pk>/update/)
     path('books/<int:pk>/update/', BookUpdateView.as_view(), name='book-update'), 
     
-    # Delete View (DELETE) - Typically uses the same URL as Detail, but handles different methods
+    # Task 1: Delete View (DELETE /api/books/<int:pk>/delete/)
     path('books/<int:pk>/delete/', BookDeleteView.as_view(), name='book-delete'),
 ]
