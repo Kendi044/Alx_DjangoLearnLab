@@ -20,8 +20,8 @@ urlpatterns = [
     path('books/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
     
     # Task 1: Update View (PUT/PATCH /api/books/<int:pk>/update/)
-    path('books/<int:pk>/update/', BookUpdateView.as_view(), name='book-update'), 
+    path('books/update/', BookUpdateView.as_view(), name='book-update'), 
     
     # Task 1: Delete View (DELETE /api/books/<int:pk>/delete/)
-    path('books/<int:pk>/delete/', BookDeleteView.as_view(), name='book-delete'),
+    path('books/delete/', BookDeleteView.as_view(), name='book-delete'),
 ]
