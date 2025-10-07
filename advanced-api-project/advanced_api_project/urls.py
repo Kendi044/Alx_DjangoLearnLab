@@ -16,13 +16,10 @@ Including another URLconf
 """
 # api/urls.py
 
-from django.urls import path
-from .views import BookListCreateView, BookDetailUpdateDeleteView
+from django.urls import path, include
+from django.contrib import admin
 
 urlpatterns = [
-    # /api/books/ (GET: List, POST: Create)
-    path('books/', BookListCreateView.as_view(), name='book-list-create'),
-    
-    # /api/books/<id>/ (GET: Detail, PUT/PATCH: Update, DELETE: Destroy)
-    path('books/<int:pk>/', BookDetailUpdateDeleteView.as_view(), name='book-detail-update-delete'),
+    path('admin/', admin.site.urls),
+    path('api/', include('api.urls')),
 ]
