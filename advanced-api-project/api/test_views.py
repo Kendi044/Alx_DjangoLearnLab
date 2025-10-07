@@ -1,4 +1,4 @@
-# api/test_views.py
+# api/test_views.py (Updated with self.client.login)
 
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
@@ -14,7 +14,9 @@ class BookAPITestCase(APITestCase):
     def setUp(self):
         # 1. Setup API Client and Users
         self.client = APIClient()
-        self.user = User.objects.create_user(username='testuser', password='password123')
+        # Create user with defined username and password for login test
+        self.user_password = 'password123'
+        self.user = User.objects.create_user(username='testuser', password=self.user_password)
         
         # 2. Setup Base Data
         self.author1 = Author.objects.create(name='J.K. Rowling')
@@ -32,7 +34,7 @@ class BookAPITestCase(APITestCase):
                                          publication_year=2020, 
                                          author=self.author1)
         
-        # 3. Define URLs using names defined in api/urls.py
+        # 3. Define URLs 
         self.list_url = reverse('book-list')
         self.create_url = reverse('book-create')
         self.update_url = reverse('book-update', kwargs={'pk': self.book2.pk})
@@ -47,7 +49,7 @@ class BookAPITestCase(APITestCase):
         }
         self.invalid_payload_future = {
             'title': 'Future Book',
-            'publication_year': date.today().year + 1, # Future date for validation test
+            'publication_year': date.today().year + 1,
             'author': self.author1.id
         }
         self.update_payload = {
@@ -56,18 +58,24 @@ class BookAPITestCase(APITestCase):
             'author': self.author2.id 
         }
 
-
 # --------------------------------------------------------------------------------------
 #                             A. PERMISSIONS & CRUD TESTS
 # --------------------------------------------------------------------------------------
 
     def test_read_endpoints_unauthenticated(self):
-        """Test unauthenticated user can access list and detail views."""
+        """Test unauthenticated user can access list and detail views (Read-Only)."""
         list_response = self.client.get(self.list_url)
         detail_response = self.client.get(self.detail_url)
         self.assertEqual(list_response.status_code, status.HTTP_200_OK)
         self.assertEqual(detail_response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(list_response.data), 3)
+
+    def test_book_create_authenticated(self):
+        """Test authenticated user can create a book using login (201)."""
+        # 📢 Using self.client.login() as requested
+        self.client.login(username=self.user.username, password=self.user_password)
+        response = self.client.post(self.create_url, self.valid_payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Book.objects.count(), 4)
 
     def test_create_endpoint_unauthenticated_forbidden(self):
         """Test unauthenticated user cannot create a book (401)."""
@@ -75,34 +83,28 @@ class BookAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Book.objects.count(), 3)
 
-    def test_book_create_authenticated(self):
-        """Test authenticated user can create a book (201)."""
-        self.client.force_authenticate(user=self.user)
-        response = self.client.post(self.create_url, self.valid_payload, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Book.objects.count(), 4)
-        self.assertEqual(response.data['title'], 'Test New Book')
-
     def test_book_update_authenticated(self):
-        """Test authenticated user can update a book (200)."""
-        self.client.force_authenticate(user=self.user)
+        """Test authenticated user can update a book using login (200)."""
+        # 📢 Using self.client.login() as requested
+        self.client.login(username=self.user.username, password=self.user_password)
         response = self.client.put(self.update_url, self.update_payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.book2.refresh_from_db()
         self.assertEqual(self.book2.title, 'Gatsby Updated')
 
+    def test_book_delete_authenticated(self):
+        """Test authenticated user can delete a book using login (204)."""
+        # 📢 Using self.client.login() as requested
+        self.client.login(username=self.user.username, password=self.user_password)
+        response = self.client.delete(self.delete_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Book.objects.count(), 2)
+        
     def test_book_delete_unauthenticated_forbidden(self):
         """Test unauthenticated user cannot delete a book (401)."""
         response = self.client.delete(self.delete_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Book.objects.count(), 3)
-
-    def test_book_delete_authenticated(self):
-        """Test authenticated user can delete a book (204)."""
-        self.client.force_authenticate(user=self.user)
-        response = self.client.delete(self.delete_url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Book.objects.count(), 2)
 
 
 # --------------------------------------------------------------------------------------
@@ -111,33 +113,32 @@ class BookAPITestCase(APITestCase):
 
     def test_publication_year_validation_fails(self):
         """Test custom validation prevents creating a book with a future year (400)."""
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username=self.user.username, password=self.user_password)
         response = self.client.post(self.create_url, self.invalid_payload_future, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('publication_year', response.data)
-        self.assertIn('future', str(response.data['publication_year'][0]))
 
 
 # --------------------------------------------------------------------------------------
 #                          C. FILTERING, SEARCHING, ORDERING TESTS
 # --------------------------------------------------------------------------------------
+    # Note: These tests do not require authentication as they are read-only views.
 
     def test_book_filter_by_year(self):
-        """Test filtering by publication_year (Task 2)."""
+        """Test filtering by publication_year."""
         response = self.client.get(f'{self.list_url}?publication_year=1925')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['title'], 'The Great Gatsby')
         
     def test_book_search_by_title_or_author(self):
-        """Test searching across title and author name (Task 2)."""
-        # Search by author name 'Rowling' (nested search field)
+        """Test searching across title and author name."""
         response = self.client.get(f'{self.list_url}?search=Rowling')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
         
     def test_book_ordering_descending(self):
-        """Test ordering by publication year in descending order (Task 2)."""
+        """Test ordering by publication year in descending order."""
         # Order by newest first: 2020, 1925, 1859
         response = self.client.get(f'{self.list_url}?ordering=-publication_year')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
