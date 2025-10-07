@@ -99,7 +99,24 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+# advanced_api_project/settings.py (Add this block at the end)
 
+# Django REST Framework Settings
+REST_FRAMEWORK = {
+    # Default pagination, authentication, etc. can go here
+    
+    # Configure default filter backends globally
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+        # We'll use the specific package for DjangoFilterBackend later
+    ],
+    
+    # Optional: Default permissions
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+    ]
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
