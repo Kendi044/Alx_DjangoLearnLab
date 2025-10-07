@@ -1,49 +1,72 @@
 # api/views.py
 
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Book
 from .serializers import BookSerializer
 
-# --- Book Views ---
-
-class BookListCreateView(generics.ListCreateAPIView):
+# --- Book List View (GET) ---
+class BookListView(generics.ListAPIView):
     """
-    Handles LIST (all books) and CREATE (new book) operations.
-    Implements Filtering, Searching, and Ordering capabilities.
-    
-    Permissions: Read-only access for all, write access for authenticated users.
+    Step 1: A ListView for retrieving all books.
+    Includes Filtering, Searching, and Ordering functionality (Tasks 2).
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly] # Step 4: Permissions
-
-    # Step 1: Set Up Filtering (using DjangoFilterBackend)
+    permission_classes = [IsAuthenticatedOrReadOnly] 
+    
+    # Task 2: Filtering, Searching, Ordering
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    
-    # Filtering fields: allows queries like ?title=Moby%20Dick
-    filterset_fields = ['title', 'publication_year', 'author'] # Filter by FK 'author' ID
-    
-    # Step 2: Implement Search Functionality
-    # Search fields: allows text search across these fields via ?search=query
-    search_fields = ['title', 'author__name'] # Search in book title and nested author name
-    
-    # Step 3: Configure Ordering
-    # Ordering fields: allows sorting via ?ordering=-publication_year
+    filterset_fields = ['title', 'publication_year', 'author']
+    search_fields = ['title', 'author__name']
     ordering_fields = ['title', 'publication_year', 'id']
-    ordering = ['title'] # Default ordering
+    ordering = ['title'] 
 
-    # Customization Instruction: Handle form submission validation (handled by DRF/Serializer)
-    # The serializer's `validate_publication_year` function handles the specific validation.
-    
-class BookDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+
+# --- Book Detail View (GET by ID) ---
+class BookDetailView(generics.RetrieveAPIView):
     """
-    Handles RETRIEVE, UPDATE, and DELETE operations for a single book.
-    
-    Permissions: Read-only access for all, write/delete access for authenticated users.
+    Step 1: A DetailView for retrieving a single book by ID.
+    Read-only access for all users.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly] # Step 4: Permissions
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+# --- Book Create View (POST) ---
+class BookCreateView(generics.CreateAPIView):
+    """
+    Step 1: A CreateView for adding a new book.
+    Restricted to authenticated users (IsAuthenticated).
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    # Step 4: Restrict creation to authenticated users only
+    permission_classes = [IsAuthenticated]
+
+
+# --- Book Update View (PUT/PATCH) ---
+class BookUpdateView(generics.UpdateAPIView):
+    """
+    Step 1: An UpdateView for modifying an existing book.
+    Restricted to authenticated users (IsAuthenticated).
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    # Step 4: Restrict updates to authenticated users only
+    permission_classes = [IsAuthenticated]
+
+
+# --- Book Delete View (DELETE) ---
+class BookDeleteView(generics.DestroyAPIView):
+    """
+    Step 1: A DeleteView for removing a book.
+    Restricted to authenticated users (IsAuthenticated).
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    # Step 4: Restrict deletion to authenticated users only
+    permission_classes = [IsAuthenticated]
