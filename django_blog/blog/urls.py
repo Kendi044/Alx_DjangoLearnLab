@@ -20,10 +20,10 @@ urlpatterns = [
     # ... CRUD URLs from Task 2 ...
 
     # Comment Creation: /post/1/comment/new/
-    path('post/<int:pk>/comment/new/', add_comment_to_post, name='add-comment'),
+    path('post/<int:pk>/comments/new/', add_comment_to_post, name='add-comment'),
     
     # Comment Update: /comment/1/edit/ (uses comment PK)
-    path('comment/<int:pk>/edit/', CommentUpdateView.as_view(), name='comment-update'),
+    path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
     
     # Comment Delete: /comment/1/delete/ (uses comment PK)
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
