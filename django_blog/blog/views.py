@@ -13,6 +13,26 @@ from django.views.generic import (
 )
 from .models import Post
 from .forms import PostForm
+# blog/views.py (Replace add_comment_to_post)
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/post_detail.html' # We reuse the post detail template for the form
+
+    def form_valid(self, form):
+        # 1. Fetch the parent Post object from the URL parameter
+        post = get_object_or_404(Post, pk=self.kwargs.get('pk'))
+        
+        # 2. Assign the Foreign Key fields before saving
+        form.instance.post = post
+        form.instance.author = self.request.user
+        
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirect back to the Post detail page
+        return reverse('post-detail', kwargs={'pk': self.kwargs.get('pk')})
 
 class CommentAuthorRequiredMixin(UserPassesTestMixin):
     """
