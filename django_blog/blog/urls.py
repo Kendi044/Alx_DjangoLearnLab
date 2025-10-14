@@ -9,4 +9,5 @@ urlpatterns = [
     # Custom Authentication Paths
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
+    path('login/', views.login, name='login'),
 ]
