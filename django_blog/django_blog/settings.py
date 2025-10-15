@@ -125,3 +125,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# django_blog/settings.py
+
+# ... existing settings ...
+
+# URL to redirect to after successful login (e.g., to the home page)
+LOGIN_REDIRECT_URL = '/' 
+
+# URL to redirect to after a user logs out
+LOGOUT_REDIRECT_URL = '/'
+
+# URL where unauthenticated users are redirected when trying to access a @login_required view
+LOGIN_URL = 'login'
