@@ -9,3 +9,23 @@
 {% endif %}
 
 <p>{{ object.content|linebreaks }}</p>
+<div class="comments-section">
+    <h3>Comments ({{ object.comments.count }})</h3>
+    {% for comment in object.comments.all %}
+        <div class="comment">
+            <p><strong>{{ comment.author.username }}</strong> 
+                <small>on {{ comment.created_at|date:"M d, Y" }}</small></p>
+            <p>{{ comment.content|linebreaks }}</p>
+
+            {% if user.is_authenticated and user.id == comment.author.id %}
+                <small>
+                    <a href="{% url 'comment-update' comment.pk %}">Edit</a> |
+                    <a href="{% url 'comment-delete' comment.pk %}">Delete</a>
+                </small>
+            {% endif %}
+        </div>
+        <hr>
+    {% empty %}
+        <p>No comments yet. Be the first!</p>
+    {% endfor %}
+</div>

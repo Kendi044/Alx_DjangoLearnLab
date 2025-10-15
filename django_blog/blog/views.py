@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import UserRegistrationForm
-from django.urls import reverse_lazy # Used for redirects in CBVs
+from .forms import UserRegistrationForm, CommentForm, Comment
+from django.urls import reverse_lazy, reverse # Used for redirects in CBVs
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
     ListView,
@@ -13,6 +13,46 @@ from django.views.generic import (
 )
 from .models import Post
 from .forms import PostForm
+
+class CommentAuthorRequiredMixin(UserPassesTestMixin):
+    """
+    Mixin to check if the current user is the author of the comment.
+    """
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        # Redirect back to the post detail page after success
+        comment = self.get_object()
+        return reverse('post-detail', kwargs={'pk': comment.post.pk})
+
+class CommentUpdateView(LoginRequiredMixin, CommentAuthorRequiredMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+class CommentDeleteView(LoginRequiredMixin, CommentAuthorRequiredMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+    # success_url is handled by the CommentAuthorRequiredMixin's get_success_url
+
+@login_required
+def add_comment_to_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post        # Link the comment to the specific post
+            comment.author = request.user # Link the comment to the logged-in user
+            comment.save()
+            # Redirect back to the post detail page
+            return redirect('post-detail', pk=post.pk)
+    
+    # If not a POST request, just redirect back (or handle form errors if needed)
+    return redirect('post-detail', pk=post.pk)
 
 # === 1. READ (List and Detail) ===
 
@@ -97,3 +137,13 @@ def profile(request):
     # This view can be simple initially, just displaying user info
     # For updating the profile, you'd add UserUpdateForm/ProfileUpdateForm logic here.
     return render(request, 'blog/profile.html', {'title': 'Profile'})
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add the CommentForm to the context
+        context['form'] = CommentForm() 
+        return context

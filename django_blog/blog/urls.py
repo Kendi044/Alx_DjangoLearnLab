@@ -12,9 +12,22 @@ from .views import (
     PostDeleteView
 )
 from . import views # To include the register/profile views from Task 1
+# blog/urls.py (Add to existing urlpatterns)
+
+from .views import CommentUpdateView, CommentDeleteView, add_comment_to_post
 
 urlpatterns = [
-    # READ: List all posts (Home page)
+    # ... CRUD URLs from Task 2 ...
+
+    # Comment Creation: /post/1/comment/new/
+    path('post/<int:pk>/comment/new/', add_comment_to_post, name='add-comment'),
+    
+    # Comment Update: /comment/1/edit/ (uses comment PK)
+    path('comment/<int:pk>/edit/', CommentUpdateView.as_view(), name='comment-update'),
+    
+    # Comment Delete: /comment/1/delete/ (uses comment PK)
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
+    
     path('', PostListView.as_view(), name='blog-home'),
 
     # CREATE: New post
