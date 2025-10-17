@@ -1,13 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
-from .models import Post # Ensure Post is imported or defined above
+from django.db import models
+from taggit.managers import TaggableManager
+# ... other imports
+
+class Post(models.Model):
+    # ... existing fields (title, content, author, created_at, etc.)
+    tags = TaggableManager() # Adds the tagging field
+    # ...
+
+    def __str__(self):
+        return self.title
+    
+    # ...
 
 User = get_user_model() # Best practice for referencing the User model
 
 class Comment(models.Model):
     # Link to the specific Post being commented on
-    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', related_name='comments', on_delete=models.CASCADE)
     
     # Link to the User who wrote the comment
     author = models.ForeignKey(User, on_delete=models.CASCADE)

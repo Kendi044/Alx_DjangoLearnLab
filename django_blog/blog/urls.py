@@ -15,6 +15,8 @@ from . import views # To include the register/profile views from Task 1
 # blog/urls.py (Add to existing urlpatterns)
 
 from .views import CommentUpdateView, CommentDeleteView, add_comment_to_post
+from django.contrib.auth import views as auth_views
+app_name = 'blog' 
 
 urlpatterns = [
     # ... CRUD URLs from Task 2 ...
@@ -44,5 +46,9 @@ urlpatterns = [
     
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
-    path('login/', views.login, name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    
+    # You might also want logout
+    path('logout/', auth_views.LogoutView.as_view(template_name='registration/logged_out.html'), name='logout'),
+    # ... other paths ...
 ]
