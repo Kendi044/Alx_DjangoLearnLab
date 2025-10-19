@@ -14,6 +14,41 @@ from django.views.generic import (
 from .models import Post
 from .forms import PostForm
 # blog/views.py (Replace add_comment_to_post)
+# blog/views.py
+from django.views.generic import ListView
+from django.db.models import Q  # Import Q object for complex lookups
+from .models import Post
+# from taggit.models import Tag, get_object_or_404 # Also ensure these are imported for tag filtering
+
+class PostListView(ListView):
+    # ... existing settings ...
+    model = Post
+    template_name = 'blog/post_list.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+    
+    # 🌟 Implement the search logic here
+    def get_queryset(self):
+        # Start with the default queryset (all posts)
+        queryset = super().get_queryset()
+        
+        # Get the search query 'q' from the URL parameters
+        query = self.request.GET.get('q') 
+        
+        if query:
+            # Use the Q object to build a complex, multi-field search query
+            queryset = queryset.filter(
+                Q(title__icontains=query) |        # Search by title (case-insensitive)
+                Q(content__icontains=query) |      # Search by content (case-insensitive)
+                Q(tags__name__icontains=query)     # Search by tag name (case-insensitive)
+            ).distinct() # Use .distinct() to avoid returning duplicate posts if they match multiple criteria (e.g., matching two different tags)
+            
+        return queryset
+
+# Note: Also ensure your separate view for filtering by a specific tag is present.
+
+# def post_list_by_tag(request, tag_slug):
+#     # ... implementation for viewing posts by a specific tag
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
