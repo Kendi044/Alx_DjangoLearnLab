@@ -11,6 +11,7 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content', 'tags']
+        "TagWidget()"
         
         # Using the widgets attribute to apply the custom widget to the 'tags' field
         widgets = {
