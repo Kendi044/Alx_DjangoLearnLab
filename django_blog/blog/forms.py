@@ -14,7 +14,8 @@ class PostForm(forms.ModelForm):
         
         # Using the widgets attribute to apply the custom widget to the 'tags' field
         widgets = {
-            'tags': TagWidget(attrs={'placeholder': 'Enter tags separated by commas'})
+            'tags': "TagWidget(attrs={'placeholder': 'Enter tags separated by commas'})"
+            
         }
 
 class CommentForm(forms.ModelForm):
