@@ -42,7 +42,24 @@ class PostListView(ListView):
                 Q(content__icontains=query) |      # Search by content (case-insensitive)
                 Q(tags__name__icontains=query)     # Search by tag name (case-insensitive)
             ).distinct() # Use .distinct() to avoid returning duplicate posts if they match multiple criteria (e.g., matching two different tags)
-            
+
+        Python
+
+     
+   def search_view(request):
+      query = request.GET.get('q')
+      posts = Post.objects.all() # Start with all objects
+
+       if query:
+        # Explicitly call Post.objects.filter()
+           posts = Post.objects.filter(
+              Q(title__icontains=query) |
+              Q(content__icontains=query) |
+              Q(tags__name__icontains=query)
+             ).distinct()
+
+       context = {'posts': posts, 'query': query}
+        return render(request, 'blog/post_list.html', context)
         return queryset
 
 # Note: Also ensure your separate view for filtering by a specific tag is present.
