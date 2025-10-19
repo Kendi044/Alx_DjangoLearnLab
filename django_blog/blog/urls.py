@@ -43,7 +43,11 @@ urlpatterns = [
     
     # DELETE: Delete existing post
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
+    path('', views.PostListView.as_view(), name='post_list'),
     
+    # 🌟 ADD THIS NEW URL PATTERN FOR TAG FILTERING
+    # The <slug:tag_slug> part captures the tag name (e.g., 'python')
+    path('tags/<slug:tag_slug>/', views.PostByTagListView.as_view(),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
